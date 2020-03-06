@@ -1,5 +1,6 @@
 <template>
-      <div class="mainContent">
+      <div>
+        <div class="mainContent">
         <div class="title">{{post.title}}</div>
         <video
           :poster="post.cover[0].url"
@@ -33,11 +34,23 @@
           </div>
         </div>
       </div>
+
+        <postDetailFooter
+      :post="post"
+      >
+
+      </postDetailFooter>
+      </div>
+
 </template>
 
 <script>
+     import postDetailFooter from '@/components/postDetailFooter'
     export default {
         name: "PostDeatail",
+        components:{
+          postDetailFooter
+        },
         data(){
           return {
             post:{},
