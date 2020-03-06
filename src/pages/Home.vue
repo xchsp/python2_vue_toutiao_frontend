@@ -1,10 +1,18 @@
 <template>
     <div>
         <homeHeader></homeHeader>
-        <van-tabs v-model="activeTab">
+        <van-tabs sticky v-model="activeTab">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            :immediate-check = "false"
+            @load="loadMorePosts"
+          >
           <van-tab :key="index" v-for="(tabItem,index) in tabList" :title="tabItem.name">
               <post v-for="(item,index) in tabList[activeTab].posts" :key="index" :post="item"></post>
           </van-tab>
+          </van-list>
         </van-tabs>
     </div>
 
@@ -21,6 +29,8 @@
         },
         data(){
           return{
+            loading:false,
+            finished:false,
             activeTab:0,
             // posts: [],
             tabList:[],
@@ -30,13 +40,22 @@
         watch:{
           activeTab(newTab){
             console.log(newTab)
-            this.getTabPosts(newTab)
+            if(this.tabList[newTab].posts.length==0)
+            {
+              this.getTabPosts(newTab)
+            }
+
           }
         },
         mounted(){
           this.initTabList()
         },
         methods:{
+          loadMorePosts(){
+            console.log('loadMorePosts')
+            this.tabList[this.activeTab].currentPageIndex+=1
+            this.getTabPosts(this.activeTab)
+          },
           getTabPosts(tabIndex){
               let cateId = this.tabList[tabIndex].id
               console.log(cateId)
@@ -49,7 +68,15 @@
                   pageSize:this.pageSize
                 }
               }).then(res=>{
-                  this.tabList[tabIndex].posts = res.data
+                  // let arr1 = [1,2,3,4]
+                  // let arr2 = ['zhagnsan','lisi']
+                  // let arr12 = [...arr1,...arr2]
+                  // console.log(arr12)
+                  let postsArray = [...this.tabList[tabIndex].posts,...res.data]
+                  this.tabList[tabIndex].posts = postsArray
+                  if(res.data.length < this.pageSize){
+                      this.finished = true
+                  }
                   console.log(res)
               })
           },
