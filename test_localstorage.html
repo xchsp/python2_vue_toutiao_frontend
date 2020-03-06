@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        localStorage['a'] = 1
+        localStorage.b = 2
+        localStorage.setItem('c',3)
+      //第一种方法读取
+      var a=localStorage.a;
+        console.log(a);
+    //第二种方法读取
+    var b=localStorage["b"];
+    console.log(b);
+    //第三种方法读取
+    var c=localStorage.getItem("c");
+    console.log(c);
+
+    localStorage.removeItem("a");
+    for(var i=0; i<localStorage.length;i++){
+        console.log('第'+i+'条数据key为：'+localStorage.key(i)+',value为：'+localStorage.getItem(localStorage.key(i)));
+    }
+    </script>
+</head>
+<body>
+
+</body>
+</html>
