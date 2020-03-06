@@ -28,6 +28,13 @@
           <div v-if="post.comment_length==0">
             <div>暂无跟帖,抢占沙发</div>
           </div>
+          <comment
+          v-else
+          v-for="(item,index) in comments"
+          :key="index"
+          :commentItem="item"
+          >
+          </comment>
 
           <div class="more">
             <div @click="toMoreComments" class="moreComment">更多跟帖</div>
@@ -37,6 +44,7 @@
 
         <postDetailFooter
       :post="post"
+      @newComment="getComments"
       >
 
       </postDetailFooter>
@@ -46,13 +54,16 @@
 
 <script>
      import postDetailFooter from '@/components/postDetailFooter'
+     import comment from '@/components/comment'
     export default {
         name: "PostDeatail",
         components:{
-          postDetailFooter
+          postDetailFooter,
+          comment
         },
         data(){
           return {
+            comments:[],
             post:{},
             postId:this.$route.params.id
           }
@@ -64,11 +75,29 @@
               }).then(res=>{
                   console.log(res)
                   this.post = res
+                  this.getComments()
               })
         },
         methods:{
+          getComments(){
+              this.$axios({
+                url:'/get_comments/' + this.postId,
+                method:'get',
+                params:{
+                  pageSize:3
+                }
+              }).then(res=>{
+                  console.log(res)
+                  this.comments = res
+              })
+          },
           toMoreComments(){
-
+                this.$router.push({
+                    name: 'moreComments',
+                    params: {
+                      id: this.postId
+                    }
+                  })
           },
           like(){
 

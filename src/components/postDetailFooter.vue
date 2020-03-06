@@ -38,7 +38,11 @@
                   content:this.comment
                 }
               }).then(res=>{
-                  console.log(res)
+                this.isFocus = false;
+                this.post.comment_length+=1
+                this.comment = ''
+                this.$emit('newComment')
+                console.log(res)
               })
           },
           star(){
@@ -52,7 +56,9 @@
 
           },
           handleBlur(){
-
+              if(!this.comment){
+                this.isFocus = false
+              }
           }
         }
     }

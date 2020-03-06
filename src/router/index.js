@@ -7,6 +7,7 @@ import Home from '@/pages/Home'
 import Search from '@/pages/Search'
 import Profile from '@/pages/Profile'
 import PostDetail from '@/pages/PostDetail'
+import MoreComments from '@/pages/MoreComments'
 Vue.use(Router)
 
 export default new Router({
@@ -24,6 +25,11 @@ export default new Router({
       path: '/postDetail/:id',
       name: 'postDetailPage',
       component: PostDetail
+    },
+     {
+      path: '/moreComments/:id',
+      name: 'moreComments',
+      component: MoreComments
     },
         {
       path: '/search',
