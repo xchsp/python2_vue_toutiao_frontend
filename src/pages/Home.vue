@@ -2,17 +2,17 @@
     <div>
         <homeHeader></homeHeader>
         <van-tabs sticky v-model="activeTab">
-          <van-list
+          <van-tab :key="index" v-for="(tabItem,index) in tabList" :title="tabItem.name">
+            <van-list
             v-model="loading"
-            :finished="finished"
+            :finished="tabItem.finished"
             finished-text="没有更多了"
             :immediate-check = "false"
             @load="loadMorePosts"
-          >
-          <van-tab :key="index" v-for="(tabItem,index) in tabList" :title="tabItem.name">
-              <post v-for="(item,index) in tabList[activeTab].posts" :key="index" :post="item"></post>
-          </van-tab>
-          </van-list>
+            >
+              <post v-for="(item,index) in tabItem.posts" :key="index" :post="item"></post>
+            </van-list>
+        </van-tab>
         </van-tabs>
     </div>
 
@@ -30,7 +30,7 @@
         data(){
           return{
             loading:false,
-            finished:false,
+            // finished:false,
             activeTab:0,
             // posts: [],
             tabList:[],
@@ -75,7 +75,7 @@
                   let postsArray = [...this.tabList[tabIndex].posts,...res.data]
                   this.tabList[tabIndex].posts = postsArray
                   if(res.data.length < this.pageSize){
-                      this.finished = true
+                      this.tabList[tabIndex].finished = true
                   }
                   console.log(res)
               })
@@ -89,6 +89,7 @@
                   res.forEach(element=>{
                       element.currentPageIndex = 1
                       element.posts = []
+                      element.finished = false
                   })
                   this.tabList = res
                   console.log(res)
