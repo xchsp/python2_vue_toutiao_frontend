@@ -1,10 +1,11 @@
 <template>
     <div>
         <homeHeader></homeHeader>
-        <div>
-          <post v-for="(item,index) in posts" :key="index" :post="item"></post>
-        </div>
-
+        <van-tabs v-model="activeTab">
+          <van-tab :key="index" v-for="(tabItem,index) in tabList" :title="tabItem.name">
+              <post v-for="(item,index) in tabList[activeTab].posts" :key="index" :post="item"></post>
+          </van-tab>
+        </van-tabs>
     </div>
 
 </template>
@@ -20,43 +21,52 @@
         },
         data(){
           return{
-            posts: [
-        {
-          'id':11,
-          'type':2,
-          'title':'而停止关注这个用户，而停止关注这个用户，而停止关注这个用户，而停止关注这个用户，可以这样做',
-          'comment_length':2,
-          'user':{
-            'nickname':'zhangsan'
-          },
-          'cover':[{'url':'https://upload-images.jianshu.io/upload_images/13746487-4b74de284d91f490.png?imageMogr2/auto-orient/strip|imageView2/2/w/514/format/webp'}
-          ,{'url':'https://upload-images.jianshu.io/upload_images/13746487-4b74de284d91f490.png?imageMogr2/auto-orient/strip|imageView2/2/w/514/format/webp'}
-          ,{'url':'https://upload-images.jianshu.io/upload_images/13746487-4b74de284d91f490.png?imageMogr2/auto-orient/strip|imageView2/2/w/514/format/webp'}]
+            activeTab:0,
+            // posts: [],
+            tabList:[],
+            pageSize:5
+          }
         },
-        {
-          'id':12,
-          'type':1,
-          'title':'而停止关注这个用户，而停止关注这个用户，而停止关注这个用户，而停止关注这个用户，可以这样做',
-          'comment_length':2,
-          'user':{
-            'nickname':'zhangsan'
-          },
-          'cover':[{'url':'https://upload-images.jianshu.io/upload_images/13746487-4b74de284d91f490.png?imageMogr2/auto-orient/strip|imageView2/2/w/514/format/webp'}
-            ,{'url':'https://upload-images.jianshu.io/upload_images/13746487-4b74de284d91f490.png?imageMogr2/auto-orient/strip|imageView2/2/w/514/format/webp'}]
+        watch:{
+          activeTab(newTab){
+            console.log(newTab)
+            this.getTabPosts(newTab)
+          }
         },
-        {
-          'id':13,
-          'type':1,
-          'title':'而停止关注这个用户，而停止关注这个用户，而停止关注这个用户，而停止关注这个用户，可以这样做',
-          'comment_length':2,
-          'user':{
-            'nickname':'zhangsan'
+        mounted(){
+          this.initTabList()
+        },
+        methods:{
+          getTabPosts(tabIndex){
+              let cateId = this.tabList[tabIndex].id
+              console.log(cateId)
+              this.$axios({
+                url:'/get_cate_posts',
+                method:'get',
+                params:{
+                  category:cateId,
+                  pageIndex:this.tabList[tabIndex].currentPageIndex,
+                  pageSize:this.pageSize
+                }
+              }).then(res=>{
+                  this.tabList[tabIndex].posts = res.data
+                  console.log(res)
+              })
           },
-           'cover':[{'url':'https://upload-images.jianshu.io/upload_images/13746487-4b74de284d91f490.png?imageMogr2/auto-orient/strip|imageView2/2/w/514/format/webp'}
-          ,{'url':'https://upload-images.jianshu.io/upload_images/13746487-4b74de284d91f490.png?imageMogr2/auto-orient/strip|imageView2/2/w/514/format/webp'}
-          ,{'url':'https://upload-images.jianshu.io/upload_images/13746487-4b74de284d91f490.png?imageMogr2/auto-orient/strip|imageView2/2/w/514/format/webp'}]
-        }
-    ]
+          initTabList(){
+              this.$axios({
+                url:'/category',
+                method:'get'
+              }).then(res=>{
+                  // console.log(res)
+                  res.forEach(element=>{
+                      element.currentPageIndex = 1
+                      element.posts = []
+                  })
+                  this.tabList = res
+                  console.log(res)
+                  this.getTabPosts(this.activeTab)
+              })
           }
         }
     }
