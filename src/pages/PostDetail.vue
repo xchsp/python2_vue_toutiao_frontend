@@ -1,5 +1,6 @@
 <template>
       <div>
+
         <div class="mainContent">
         <div class="title">{{post.title}}</div>
         <video
@@ -45,6 +46,7 @@
         <postDetailFooter
       :post="post"
       @newComment="getComments"
+      @starChanged="starChanged"
       >
 
       </postDetailFooter>
@@ -79,6 +81,9 @@
               })
         },
         methods:{
+          starChanged(){
+            this.post.has_star = !this.post.has_star
+          },
           getComments(){
               this.$axios({
                 url:'/get_comments/' + this.postId,

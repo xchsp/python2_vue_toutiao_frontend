@@ -46,7 +46,13 @@
               })
           },
           star(){
-
+              this.$axios({
+                url:'/post_star/' + this.post.id,
+                method:'POST',
+              }).then(res=>{
+                this.$emit('starChanged')
+                console.log(res)
+              })
           },
           showArea(){
               this.isFocus = true;
