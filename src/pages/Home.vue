@@ -81,6 +81,12 @@
               })
           },
           initTabList(){
+              if(localStorage.getItem('tabActive')){
+                this.tabList = JSON.parse(localStorage.getItem('tabActive'))
+                this.getTabPosts(this.activeTab)
+                return
+              }
+
               this.$axios({
                 url:'/category',
                 method:'get'
