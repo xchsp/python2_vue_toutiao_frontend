@@ -31,10 +31,25 @@ export default {
               }).then(res => {
                 console.log(res)
                 this.fllowList = res
+                this.fllowList.forEach(element=>{
+                  if(!element.head_img){
+                    element.head_img = '/static/imgs/default.png'
+                  }
+                  else{
+                    element.head_img = this.$fixImgUrl(element.head_img)
+                  }
+                })
               })
     },
     cancelFllow(uid) {
-
+          this.$axios({
+            url:'/user_follow/' + uid,
+            method:'POST',
+          }).then(res=>{
+           if(res.message=='取消关注成功'){
+              this.getData()
+            }
+          })
     }
   },
   mounted() {
