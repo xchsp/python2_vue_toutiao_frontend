@@ -37,6 +37,9 @@
 
     export default {
         name: "Login",
+      mounted(){
+          localStorage.removeItem('token')
+      },
        data() {
         return {
           username: '',
